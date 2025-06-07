@@ -1,0 +1,1 @@
+Meu Oráculo das Estrelas
