@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oráculo Cósmico</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --transition-duration: 0.8s;
+            --transition-timing: cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        
+        body {
+            background: #001f3f url('3.jpg') no-repeat center/cover;
+            color: white;
+            font-family: 'Work Sans', sans-serif;
+            text-align: center;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* CONTAINER PRINCIPAL */
+        .container {
+            background: rgba(123, 53, 125, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            position: relative;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(0) scale(1);
+            transition: 
+                transform 0.4s var(--transition-timing),
+                box-shadow 0.4s var(--transition-timing);
+            will-change: transform;
+            overflow: hidden;
+        }
+        
+        /* EFEITO DE BRILHO MAIS VISÍVEL */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: radial-gradient(
+                circle at center,
+                rgba(255, 255, 255, 0.15) 0%,
+                rgba(255, 255, 255, 0) 70%
+            );
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            z-index: -1;
+        }
+        
+        /* HOVER - BRILHO VISÍVEL */
+        .container:hover::before {
+            opacity: 0.8;
+        }
+        
+        .container:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+        }
+        
+        /* [RESTANTE DO SEU CSS PERMANECE IGUAL] */
+        .container.fade-container {
+            transform: translateY(8px) scale(0.98);
+            opacity: 0.9;
+            transition: all var(--transition-duration) var(--transition-timing);
+        }
+        
+        h1 {
+            margin-top: 0;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            opacity: 0.95;
+        }
+        
+        #affirmation {
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 25px 0;
+            font-size: 1.2rem;
+            transition: 
+                opacity var(--transition-duration) var(--transition-timing), 
+                transform var(--transition-duration) var(--transition-timing);
+        }
+        
+        #affirmation.fade-out {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+        
+        #affirmation.fade-in {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+        
+        #affirmation p {
+            margin: 0;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+        
+        #affirmation .citacao {
+            font-size: 0.85rem;
+            display: block;
+            margin-top: 10px;
+            opacity: 0.8;
+            font-style: italic;
+            font-weight: 300;
+        }
+        
+        button {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 400;
+            transition: all 0.4s var(--transition-timing);
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .loading {
+            font-style: italic;
+            opacity: 0.7;
+            font-weight: 300;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="oracleContainer">
+        <h1>Oráculo das Estrelas</h1>
+        <div id="affirmation">
+            <p class="loading">Clique no botão para uma mensagem cósmica...</p>
+        </div>
+        <button onclick="gerarMensagem()">Nova Mensagem</button>
+    </div>
+
+    <script>
+        const mensagens = [
+            "Nossos pensamentos criam a nossa realidade.",
+            "Amo recomeços! Eles mostram que merecemos mais do que perdemos.",
+            "Há uma enorme quantidade de poder no silêncio.",
+            "Quanto mais você honra suas próprias decisões, mais amor você encontra no caminho.",
+            "A gratidão é o ímã das bênçãos.", 
+            "O processo NÃO é linear.",
+            "Anda que o caminho abre.",
+            "Passou antes, vai passar agora também!",
+            "Busque se conectar com o que ama e então, aos poucos, irá se encontrar.",
+            "Mudar é a única salvação real que eu conheço.", 
+            "Não viva fugindo da sua capacidade de sentir. Aprenda a lidar com ela.",
+            "Nem tudo deve ser revelado. Todo mundo deve cultivar um jardim secreto.<span class='citacao'>- Lou Salomé</span>",
+            "O que você precisa deixar ir para seguir mais leve?",
+            "Qual emoção precisa de espaço em você hoje?",
+            "Qual máscara você pode tirar hoje?",
+            "O que o silêncio está tentando te dizer?","Cada dor que você acolhe é uma parte sua que volta para casa.", "Qual ciclo você precisa encerrar, mesmo sem todas as respostas?", "A energia que você sustenta no invisível constrói o que se torna visível.", "Você não está atrasada: está seguindo no tempo exato da sua alma.", "Há uma batalha vencida nas coisas que escolhemos não repetir.",
+        ];
+
+        let mensagensDisponiveis = [...mensagens];
+        let ultimaMensagem = "";
+
+        function gerarMensagem() {
+            const divMensagem = document.getElementById('affirmation');
+            const container = document.getElementById('oracleContainer');
+            
+            container.classList.add('fade-container');
+            divMensagem.classList.add('fade-out');
+            
+            setTimeout(() => {
+                if (mensagensDisponiveis.length === 0) {
+                    mensagensDisponiveis = [...mensagens];
+                    const index = mensagensDisponiveis.indexOf(ultimaMensagem);
+                    if (index > -1) {
+                        mensagensDisponiveis.splice(index, 1);
+                    }
+                }
+                
+                const randomIndex = Math.floor(Math.random() * mensagensDisponiveis.length);
+                const mensagemAleatoria = mensagensDisponiveis[randomIndex];
+                
+                ultimaMensagem = mensagemAleatoria;
+                mensagensDisponiveis.splice(randomIndex, 1);
+                
+                divMensagem.innerHTML = `<p>${mensagemAleatoria}</p>`;
+                divMensagem.classList.remove('fade-out');
+                divMensagem.classList.add('fade-in');
+                container.classList.remove('fade-container');
+                
+                void divMensagem.offsetWidth;
+                
+                setTimeout(() => {
+                    divMensagem.classList.remove('fade-in');
+                }, 10);
+                
+            }, 300);
+        }
+    </script>
+</body>
+</html>
